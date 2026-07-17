@@ -122,11 +122,9 @@ public class PaymentManager implements PaymentService {
 
         // check everything first
         checkAllValidationsForIndividualAdd(makePayment.getCreateRentalCarRequest(), makePayment.getCreateOrderedAdditionalRequestList());
-        System.out.println("validasyonlar bitti"); // debug - validations done
 
         // calc the price
         double totalPrice = calculateTotalPrice(makePayment.getCreateRentalCarRequest(), makePayment.getCreateOrderedAdditionalRequestList());
-        System.out.println("total fiyat hesaplandı: "+ totalPrice); // debug msg in turkish lol
 
         // send to payment gateway
         this.posService.payment(makePayment.getCreateCreditCardRequest().getCardNumber(),
@@ -135,11 +133,9 @@ public class PaymentManager implements PaymentService {
                                makePayment.getCreateCreditCardRequest().getCardExpirationDate(),
                                totalPrice);
 
-        System.out.println("ödeme alındı"); // more turkish - payment received
 
         // do all the db stuff
         runPaymentSuccessorForIndividualRentAdd(makePayment, totalPrice, cardSaveInformation);
-        System.out.println("run succesor den dönüldü"); // should remove these debug prints someday
 
         return new SuccessResult(BusinessMessages.PaymentMessages.PAYMENT_AND_RENT_CAR_SUCCESSFULLY);
     }
@@ -164,19 +160,15 @@ public class PaymentManager implements PaymentService {
     @Transactional(rollbackFor = BusinessException.class)
     public Result makePaymentForIndividualRentUpdate(MakePaymentForIndividualRentUpdate makePaymentForIndividualRentUpdate, CreditCardManager.CardSaveInformation cardSaveInformation) throws CustomerNotFoundException, MakePaymentFailedException, RentalCarNotFoundException, StartDateBeforeTodayException, StartDateBeforeFinishDateException, CarAlreadyRentedEnteredDateException, CarNotFoundException, IndividualCustomerNotFoundException, CarAlreadyInMaintenanceException, CityNotFoundException, AdditionalNotFoundException {
 
-        System.out.println("burad");
         checkAllValidationsForIndividualUpdate(makePaymentForIndividualRentUpdate.getUpdateRentalCarRequest());
 
-        System.out.println("burad5");
         double totalPrice = calculatePriceDifferenceWithPreviousRentalCar(makePaymentForIndividualRentUpdate.getUpdateRentalCarRequest());
 
-        System.out.println("burada");
         if(totalPrice > 0){
             this.posService.payment(makePaymentForIndividualRentUpdate.getCreateCreditCardRequest().getCardNumber(), makePaymentForIndividualRentUpdate.getCreateCreditCardRequest().getCardOwner(),
                     makePaymentForIndividualRentUpdate.getCreateCreditCardRequest().getCardCvv(), makePaymentForIndividualRentUpdate.getCreateCreditCardRequest().getCardExpirationDate(), totalPrice);
 
-            System.out.println("burada5c");
-            runPaymentSuccessorForIndividualRentUpdate(makePaymentForIndividualRentUpdate, totalPrice, cardSaveInformation);
+                runPaymentSuccessorForIndividualRentUpdate(makePaymentForIndividualRentUpdate, totalPrice, cardSaveInformation);
 
             return new SuccessResult(BusinessMessages.PaymentMessages.PAYMENT_AND_RENT_CAR_UPDATE_SUCCESSFULLY);
         }
@@ -266,9 +258,7 @@ public class PaymentManager implements PaymentService {
 
     @Transactional(rollbackFor = BusinessException.class)
     void runPaymentSuccessorForIndividualRentAdd(MakePaymentForIndividualRentAdd makePayment, double totalPrice, CreditCardManager.CardSaveInformation cardSaveInformation) throws CustomerNotFoundException, AdditionalNotFoundException, RentalCarNotFoundException {
-        System.out.println("runpayment successor a girildi"); // entered payment successor
         int rentalCarId = this.rentalCarService.addForIndividualCustomer(makePayment.getCreateRentalCarRequest());
-        System.out.println("rental eklendi tp:" + totalPrice);  // rental added
 
         // create payment req
         CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
@@ -281,13 +271,9 @@ public class PaymentManager implements PaymentService {
         payment.setPaymentId(0);  // make sure it's new
 
         int paymentId = this.paymentDao.save(payment).getPaymentId();
-        System.out.println("payment eklendi");  // payment added
         this.creditCardService.checkSaveInformationAndSaveCreditCard(makePayment.getCreateCreditCardRequest(), cardSaveInformation);
-        System.out.println("credit cart eklendi");  // credit card added - typo in turkish lol
         this.orderedAdditionalService.saveOrderedAdditionalList(makePayment.getCreateOrderedAdditionalRequestList(), rentalCarId);
-        System.out.println("orderedlar eklendi");  // ordered additionals added
         this.invoiceService.createAndAddInvoice(rentalCarId, paymentId);
-        System.out.println("invoice eklendi");  // invoice added
     }
 
     @Transactional(rollbackFor = BusinessException.class)
@@ -316,14 +302,10 @@ public class PaymentManager implements PaymentService {
         createPaymentRequest.setRentalCarId(makePayment.getUpdateRentalCarRequest().getRentalCarId());
         createPaymentRequest.setTotalPrice(totalPrice);
         makePayment.getCreateCreditCardRequest().setCustomerId(makePayment.getUpdateRentalCarRequest().getCustomerId());
-        System.out.println("burada1");
         Payment payment = this.modelMapperService.forRequest().map(createPaymentRequest, Payment.class);
         payment.setPaymentId(0);
-        System.out.println("burada5");
         int paymentId = this.paymentDao.save(payment).getPaymentId();
-        System.out.println("burada6");
         this.rentalCarService.updateForIndividualCustomer(makePayment.getUpdateRentalCarRequest());
-        System.out.println("burada7");
         this.creditCardService.checkSaveInformationAndSaveCreditCard(makePayment.getCreateCreditCardRequest(), cardSaveInformation);
         this.invoiceService.createAndAddInvoice(makePayment.getUpdateRentalCarRequest().getRentalCarId(), paymentId);
     }
