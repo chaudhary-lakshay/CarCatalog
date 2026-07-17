@@ -85,15 +85,18 @@ cd CarCatalog
 CREATE DATABASE carCatalogDb;
 ```
 
-3. **Configure application properties**
+3. **Set environment variables**
 
-Update `src/main/resources/application.properties` with your database credentials:
+The application reads configuration from environment variables — no credentials live in the repo.
 
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/carCatalogDb
-spring.datasource.username=your_username
-spring.datasource.password=your_password
-```
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `DB_URL` | no | JDBC url, defaults to `jdbc:mysql://localhost:3306/rentACarBackend` |
+| `DB_USERNAME` | yes | MySQL username |
+| `DB_PASSWORD` | yes | MySQL password |
+| `JWT_SECRET` | yes | JWT signing secret — generate with `openssl rand -hex 64` |
+| `CORS_ALLOWED_ORIGINS` | no | defaults to `http://localhost:5173` |
+| `SPRING_PROFILES_ACTIVE` | no | `dev` (default) or `prod` — prod disables Swagger and SQL logging |
 
 4. **Build and run the application**
 
