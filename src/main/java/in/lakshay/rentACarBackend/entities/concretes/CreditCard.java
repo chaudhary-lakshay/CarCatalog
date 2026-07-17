@@ -36,10 +36,6 @@ public class CreditCard {
     @Column(name = "card_owner", nullable = false)
     private String cardOwner;  // as appears on card
 
-    // security code on back
-    @Column(name = "card_cvv", length = 3, nullable = false)
-    private String cardCvv;  // 3 digits
-
     // expiration date - stored as string like MM/YY
     @Column(name = "card_expiration_date",nullable = false)
     private String cardExpirationDate;  // format MM/YY or MM/YYYY
