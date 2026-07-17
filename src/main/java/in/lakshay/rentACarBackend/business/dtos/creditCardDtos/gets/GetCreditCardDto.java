@@ -17,8 +17,6 @@ public class GetCreditCardDto {
 
     private String cardNumber;  // should mask this!! (****1234)
     private String cardOwner;   // name on card
-    private String cardCvv;     // NEVER return this in prod!!
-
     private String cardExpirationDate;  // MM/YY format
     private int customerId;     // fk to customer
 
