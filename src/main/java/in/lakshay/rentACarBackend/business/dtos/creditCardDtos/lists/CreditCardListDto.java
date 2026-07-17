@@ -16,7 +16,6 @@ public class CreditCardListDto { // for lists of cards
     private int creditCardId;   // pk
     private String cardNumber;   // should mask in prod
     private String cardOwner;    // name on card
-    private String cardCvv;      // security code - shouldnt return this!
     private String cardExpirationDate;  // MM/YY
     private int customerId;      // fk to customer
 
