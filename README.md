@@ -37,7 +37,7 @@ The application supports both individual and corporate customers, with different
 
 | 💳 **Payment Processing** | 🧾 **Invoicing** | 🎫 **Additional Services** |
 |:---|:---|:---|
-| • Multiple payment processors (Ziraat Bank, Akbank)<br>• Credit card storage option<br>• Secure transaction handling | • Automatic invoice generation<br>• Detailed price breakdown<br>• Unique invoice numbers<br>• Rental history tracking | • Add-on services for rentals<br>• Priced per day<br>• Can be added during or after booking<br>• Included in invoice calculations |
+| • Stripe PaymentIntents integration<br>• Credit card storage option (CVV never stored)<br>• Secure transaction handling | • Automatic invoice generation<br>• Detailed price breakdown<br>• Unique invoice numbers<br>• Rental history tracking | • Add-on services for rentals<br>• Priced per day<br>• Can be added during or after booking<br>• Included in invoice calculations |
 
 ## 🗄️ Architecture
 
